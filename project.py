@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 import sympy as sp
 from sympy import *
@@ -8,24 +6,26 @@ import numpy as np
 import pandas as pd
 
 
-#add & and \\ to any dataframe to make it printable in latex tabular
+#add the symbols '&' and '\\' to any dataframe to make it printable in latex tabular
 def tex_df (df):
     
     #---number of columns and rows
     rows = df.shape[0]
     col = df.shape[1]+1
     
-    #---add & to the columns and the rest
+    #---add '&' to the columns and the rest
     df = df.add_prefix('&')
     df = " & "+df
 
-    #--- add \\ and ___ to the end of columns and rest, first defining a \\ column and then adding the column
+    #--- add '\\' and '___' to the end of columns and rest, first defining a column and then adding the column
     final = [ '\\\\ \\cline{1-'+str(col)+'}']*rows
     df['\\\\ \\cline{1-'+str(col)+'}']= final
     return df
 
 #read exel as a panda dataframe 
-df = pd.read_excel('Platos.xlsx', index_col=0)
+#df = pd.read_excel('Platos.xlsx', index_col=0)
+df = pd.read_csv("Platos.csv",skiprows=1,skipfooter=1)
+print(df)
 
 #---number of columns and rows (again)
 rows = df.shape[0]
@@ -44,14 +44,13 @@ print("\\begin{document}",file=f )
 #print an element of the dataframe
 #print("Desayuno:"+df.iloc[0, 1]+"\\\\", file=f)
 
-
 #-- dataframe good for latex
 tdf=tex_df(df)
 #begin tabular and print the data frame
 print("\\begin{tabular}{"+"c|"*col + "}", file =f)
 print(tdf, file=f)
 
-#last fancy line
+#fancy last line
 print("\\multicolumn{"+str(col)+"}{|c|}{fin} \\\\ \\cline{1-"+str(col)+"}", file=f)
 
 # end tabular
